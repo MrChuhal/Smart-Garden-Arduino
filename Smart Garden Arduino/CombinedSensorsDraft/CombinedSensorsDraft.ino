@@ -75,7 +75,7 @@ void loop() {
   delayReading();
 }
 
-//Soil Temp| Relative Humidity | Air Temperature| Visible Light| Infrared Right| Soil Humidity (relative measure)
+//Soil Temp| Relative Humidity | Air Temperature| Visible Light| Infrared Right| Soil Humidity (relative measure)|button 1 state|button 2 state
 void readSensors() {  
   checkDHT();
   checkSoilTemp();
@@ -94,7 +94,7 @@ void checkButton() {
   state2 = digitalRead(BUTTON2);
     
   if(!hold2 && !state2) {
-    //button not having been held and beingp\ ressed
+    //button not having been held before and now being pressed
     on = !on;
     hold2 = 1;
     if(!on) {
@@ -117,9 +117,8 @@ void delayReading() {
 }
 
 void checkDHT() {
-  //From demo code
-  // Reading temperature or humidity takes about 250 milliseconds!
-  // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
+  // From Demo Code: Reading temperature or humidity takes about 250 milliseconds!
+  // From Demo Code: Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
    
   // readTempAndHumidity writes the humidity and temperature into a 2-element array
   // Air Temperature Temperature (degrees Celsius)
@@ -135,9 +134,8 @@ void checkDHT() {
 }
 
 void checkSoilTemp() {
-  //Soil Temperature collection
-  // call sensors.requestTemperatures() to issue a global temperature 
-  // request to all devices on the bus
+  // From Demo Code: call sensors.requestTemperatures() to issue a global temperature 
+  // From Demo Code: request to all devices on the bus
   sensors.requestTemperatures(); // Send the command to get temperatures
   // From Demo Code: We use the function ByIndex, and as an example get the temperature from the first sensor only.
   float tempC = sensors.getTempCByIndex(0);
