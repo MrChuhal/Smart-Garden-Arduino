@@ -23,12 +23,16 @@ DallasTemperature sensors(&oneWire);
 // Using DHT 11
 #define DHTTYPE DHT11
 #define DHTPIN 3 //configured to pin 3
-DHT dht(DHTPIN, DHTTYPE);   //   DHT11 DHT21 DHT22
-//Sunlight sensorinterface
+DHT dht(DHTPIN, DHTTYPE);
+
+//Sunlight sensor interface
 Si115X Si1151 = Si115X();
 
-int button1 = 6; //set the button1 pin
-int button2 = 7; //set the button2 pin
+//Constants
+#define DELAYTIME 3000 // number of milliseconds delay in each reading
+#define BUTTON1 6; //button1 pin
+#define BUTTON2 7; //button2 pin
+
 bool state1 = 1; //set button1 state
 bool state2 = 1; //set button2 state
 bool on = 0; // should by default be off
@@ -36,10 +40,15 @@ bool hold = 0;
 bool hold2 = 0; //variable for verifying if button two is being held
 float temp_hum_val[2] = {0};
 void setup() {
-  //relay
+  //relay setup
   pinMode(5,OUTPUT);
 
+  //set up dual button switch
+  pinMode(BUTTON1,INPUT);
+  pinMode(BUTTON2,INPUT);
+  
   Serial.begin(9600);
+  
   Wire.begin();  
   //set up sunlight sensor
   Serial.println("Beginning Si1151!");
@@ -49,13 +58,11 @@ void setup() {
   }
   Serial.println("Si1151 is ready!");
 
-  //refer back to Grove DHT demo if using WIO
+  //NOTE: refer back to Grove DHT demo if using WIO
   dht.begin();
   //Start up the One Wire Temperature Sensor library
   sensors.begin();
-  //set up dual button switch
-  pinMode(button1,INPUT);
-  pinMode(button2,INPUT);
+  
 }
 
 void loop() {
@@ -83,8 +90,8 @@ void readSensors() {
 void checkButton() {
   
   //read dual buttons
-  state1 = digitalRead(button1);
-  state2 = digitalRead(button2);
+  state1 = digitalRead(BUTTON1);
+  state2 = digitalRead(BUTTON2);
     
   if(!hold2 && !state2) {
     //button not having been held and beingp\ ressed
@@ -104,7 +111,7 @@ void checkButton() {
 void delayReading() {
   unsigned long time = millis();
   
-  while(millis() - time < 3000) {
+  while(millis() - time < DELAYTIME) {
     checkButton();
   }
 }
@@ -156,7 +163,6 @@ void checkSunlight() {
 
 //checks soil moisture and uses the values to turn on and off the water pump unless it is overridden by the button
 void checkSoilMoisture() {
-  //Moisture Sensor
   //The sensor qualitatively measures humidity. Low values = high humidity, high values = low humidity
   int sensorValue = analogRead(A0);
   Serial.print(sensorValue);
