@@ -1,20 +1,56 @@
-#Required for interfacing with Arduino
+from flask import Flask, request, jsonify
 import serial
 import time
+import threading
 
-ser = serial.Serial('/dev/ttyACM0',9600) #starts up a serial at this serial port with this baud rate
-#TODO: find serial port for Arduino
+app = Flask(__name__)
+
+# Initialize serial communication
+ser = serial.Serial('/dev/ttyACM0', 9600)  # Update with the correct serial port
+# Allow time for the serial connection to initialize
 time.sleep(2)
-#reads data from the Serial
-#ser.readline()
-#writes data to serial.
-#ser.write()
-def turnOnPump(): ser.write(b'1\r\n')
-def turnOffPump(): ser.write(b'2\r\n')
-def receiveData(): ser.write(b'3\r\n')
 
-while True:
-	turnOffPump()
-	receiveData()
-	print(ser.readline())
-	time.sleep(1)
+# Shared variable to store the last serial reading
+last_serial_reading = ""
+
+def turn_on_pump():
+    ser.write(b'1\r\n')
+
+def turn_off_pump():
+    ser.write(b'2\r\n')
+
+def receive_data():
+    ser.write(b'3\r\n')
+
+# Background thread to continuously read from the serial port
+def read_serial():
+    global last_serial_reading
+    while True:
+        try:
+            if ser.in_waiting > 0:
+                last_serial_reading = ser.readline().decode('utf-8').strip()
+        except Exception as e:
+            print(f"Error reading from serial: {e}")
+        time.sleep(1)
+
+# Start the background thread
+threading.Thread(target=read_serial, daemon=True).start()
+
+@app.route('/pump', methods=['POST'])
+def pump_control():
+    state = request.json.get('state')
+    if state == 'on':
+        turn_on_pump()
+        return jsonify({"message": "Pump turned on"}), 200
+    elif state == 'off':
+        turn_off_pump()
+        return jsonify({"message": "Pump turned off"}), 200
+    else:
+        return jsonify({"error": "Invalid state. Use 'on' or 'off'."}), 400
+
+@app.route('/serial', methods=['GET'])
+def get_serial_data():
+    return jsonify({"last_serial_reading": last_serial_reading}), 200
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
