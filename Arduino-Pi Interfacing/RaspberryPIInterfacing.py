@@ -15,7 +15,7 @@ def turnOffPump(): ser.write(2)
 def receiveData(): ser.wrtie(3)
 while True:
 	turnOffPump();
-	time.wait(1)
+	time.sleep(0.01)
 	receiveData();
-	time.wait(1000)
+	time.sleep(1)
 	print(ser.readLine())
