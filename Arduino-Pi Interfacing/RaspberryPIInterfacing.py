@@ -38,15 +38,21 @@ threading.Thread(target=read_serial, daemon=True).start()
 
 @app.route('/pump', methods=['POST'])
 def pump_control():
-    state = request.json.get('state')
-    if state == 'on':
-        turn_on_pump()
-        return jsonify({"message": "Pump turned on"}), 200
-    elif state == 'off':
-        turn_off_pump()
-        return jsonify({"message": "Pump turned off"}), 200
-    else:
-        return jsonify({"error": "Invalid state. Use 'on' or 'off'."}), 400
+    try:
+        data = request.json
+        print(f"Received data: {data}")  # Log the received data
+        state = data.get('state')
+        if state == 'on':
+            turn_on_pump()
+            return jsonify({"message": "Pump turned on"}), 200
+        elif state == 'off':
+            turn_off_pump()
+            return jsonify({"message": "Pump turned off"}), 200
+        else:
+            return jsonify({"error": "Invalid state. Use 'on' or 'off'."}), 400
+    except Exception as e:
+        print(f"Error in pump_control: {e}")  # Log the error
+        return jsonify({"error": "Invalid request format."}), 400
 
 @app.route('/serial', methods=['GET'])
 def get_serial_data():
