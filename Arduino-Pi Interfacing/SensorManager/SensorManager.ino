@@ -141,15 +141,12 @@ void checkSoilMoisture() {
   //The sensor qualitatively measures humidity. Low values = high humidity, high values = low humidity
   int sensorValue = analogRead(A0);
   Serial.print(sensorValue);
-  //if the button override is not on, use the measurement to determine whether the relay should turn on or off
-  if(!on) {
-    //meaning that the pump turns on if the soil is too dry
-    if(sensorValue >= 740) {
-      digitalWrite(5,HIGH);
-    } else {
-      digitalWrite(5,LOW);
-    }
+  //if the button override is not on, use the measurement to determine whether the relay should turn on or of
+  //meaning that the pump turns on if the soil is too dry
+  if(sensorValue >= 740) {
+    digitalWrite(5,HIGH);
+  } else {
+    digitalWrite(5,LOW);
   }
-  
 }
 
