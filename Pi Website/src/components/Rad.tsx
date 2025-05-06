@@ -51,12 +51,12 @@ export default function RadialChart({
     ];
 
     return (
-        <Card className="flex flex-col">
+        <Card className="flex flex-col ju">
             <CardHeader className="items-center pb-0">
                 <CardTitle>{title}</CardTitle>
                 <CardDescription>{description}</CardDescription>
             </CardHeader>
-            <CardContent className="flex-1 pb-0">
+            <CardContent className="flex-1 flex flex-colv justify-center items-center pb-0">
                 <ChartContainer
                     config={{
                         [metric]: {
@@ -64,7 +64,7 @@ export default function RadialChart({
                             color: "hsl(var(--chart-2))",
                         },
                     }}
-                    className="mx-auto aspect-square max-h-[250px]"
+                    className="mx-auto w-[250px] h-[250px]"
                 >
                     <RadialBarChart
                         data={chartData}
