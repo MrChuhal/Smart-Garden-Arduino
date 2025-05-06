@@ -3,9 +3,24 @@ import MoistureMap from "@/components/MoistureMap";
 import Rad from "@/components/Rad";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useState } from "react";
+import axios from "axios";
 
 export default function Home() {
   const [selectedState, setSelectedState] = useState("Off");
+
+  const updatePumpState = async (state: string) => {
+    try {
+      interface PumpResponse {
+        message: string;
+      }
+
+      const response = await axios.post("/api/pump", { state });
+      const data = response.data as PumpResponse;
+      console.log(data.message);
+    } catch (error) {
+      console.error("Failed to update pump state:", error);
+    }
+  };
 
   return (
     <div className="px-16 py-10">
@@ -87,7 +102,10 @@ export default function Home() {
                           ? "rounded-r-md"
                           : ""
                       }`}
-                      onClick={() => setSelectedState(option.value)}
+                      onClick={() => {
+                        setSelectedState(option.value);
+                        updatePumpState(option.value);
+                      }}
                     >
                       {option.label}
                     </button>
