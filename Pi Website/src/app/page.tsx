@@ -2,11 +2,12 @@
 import MoistureMap from "@/components/MoistureMap";
 import Rad from "@/components/Rad";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 
 export default function Home() {
   const [selectedState, setSelectedState] = useState("Off");
+  const [serialData, setSerialData] = useState<string>("");
 
   const updatePumpState = async (state: string) => {
     try {
@@ -21,6 +22,20 @@ export default function Home() {
       console.error("Failed to update pump state:", error);
     }
   };
+
+  useEffect(() => {
+    const fetchSerial = async () => {
+      try {
+        const res = await axios.get("/api/serial");
+        setSerialData(res.data.last_serial_reading);
+      } catch (e) {
+        console.error("Failed to fetch serial data:", e);
+      }
+    };
+    fetchSerial();
+    const interval = setInterval(fetchSerial, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="px-16 py-10">
@@ -116,6 +131,14 @@ export default function Home() {
           </Card>
         </div>
       </div>
+      <Card className="mt-10 w-[75%] mx-auto">
+        <CardHeader>
+          <CardTitle>Sensor A0 Reading</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-lg font-bold">{serialData}</p>
+        </CardContent>
+      </Card>
       <Card className="mt-10 w-[75%] mx-auto">
         <CardHeader>
           <CardTitle>Live Camera Feed</CardTitle>
