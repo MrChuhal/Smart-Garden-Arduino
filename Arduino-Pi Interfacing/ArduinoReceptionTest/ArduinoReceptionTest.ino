@@ -8,5 +8,5 @@ void loop() {
   // Read A0 value and send on serial every second
   int sensorValue = analogRead(A0);
   Serial.println(sensorValue);
-  delay(1000);
+  delay(100);
 }

@@ -38,7 +38,6 @@ def read_serial():
                     last_serial_reading = raw
         except Exception as e:
             print(f"Error reading from serial: {e}")
-        time.sleep(1)
 
 # Start the background thread
 threading.Thread(target=read_serial, daemon=True).start()
@@ -48,7 +47,7 @@ def pump_control():
     try:
         data = request.json
         print(f"Received data: {data}")  # Log the received data
-        state = data.get('state')
+        state = data.get('state').lower()
         if state == 'on':
             turn_on_pump()
             return jsonify({"message": "Pump turned on"}), 200
