@@ -1,9 +1,12 @@
 from flask import Flask, request, jsonify
+from flask_socketio import SocketIO
 import serial
 import time
 import threading
 
 app = Flask(__name__)
+# initialize SocketIO for WebSocket support
+socketio = SocketIO(app, cors_allowed_origins='*')
 
 # Initialize serial communication
 ser = serial.Serial('/dev/ttyACM0', 9600)  # Update with the correct serial port
@@ -29,13 +32,13 @@ def read_serial():
         try:
             if ser.in_waiting > 0:
                 raw = ser.readline().decode('utf-8').strip()
-                # assume CSV: last value is analog A0 reading
                 parts = [p.strip() for p in raw.split(',') if p.strip()]
-                # A0 reading is the third-to-last field in the CSV output
                 if len(parts) >= 3:
                     last_serial_reading = parts[-3]
                 else:
                     last_serial_reading = raw
+                # emit new serial data to WebSocket clients
+                socketio.emit('serial_data', {'last_serial_reading': last_serial_reading})
         except Exception as e:
             print(f"Error reading from serial: {e}")
 
@@ -68,4 +71,4 @@ def get_serial_data():
     return jsonify({"last_serial_reading": last_serial_reading}), 200
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    socketio.run(app, host='0.0.0.0', port=5000)

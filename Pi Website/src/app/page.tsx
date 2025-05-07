@@ -3,6 +3,7 @@ import MoistureMap from "@/components/MoistureMap";
 import Rad from "@/components/Rad";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useState, useEffect } from "react";
+import { io } from "socket.io-client";
 import axios from "axios";
 
 export default function Home() {
@@ -24,17 +25,14 @@ export default function Home() {
   };
 
   useEffect(() => {
-    const fetchSerial = async () => {
-      try {
-        const res = await axios.get("/api/serial");
-        setSerialData(res.data.last_serial_reading);
-      } catch (e) {
-        console.error("Failed to fetch serial data:", e);
-      }
+    // connect to Flask WebSocket for serial data
+    const socket = io("http://localhost:5000");
+    socket.on("serial_data", (data: { last_serial_reading: string }) => {
+      setSerialData(data.last_serial_reading);
+    });
+    return () => {
+      socket.disconnect();
     };
-    fetchSerial();
-    const interval = setInterval(fetchSerial, 1000);
-    return () => clearInterval(interval);
   }, []);
 
   return (
