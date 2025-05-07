@@ -5,8 +5,8 @@ void setup() {
 }
 
 void loop() {
-  if (Serial.available() > 0) {
-    received = Serial.parseInt(); // Use parseInt directly
-    Serial.println(received + 1);
-  }
+  // Read A0 value and send on serial every second
+  int sensorValue = analogRead(A0);
+  Serial.println(sensorValue);
+  delay(1000);
 }

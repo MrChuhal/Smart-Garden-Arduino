@@ -19,7 +19,7 @@ def turn_on_pump():
 def turn_off_pump():
     ser.write(b'2\r\n')
 
-def receive_data():
+def auto():
     ser.write(b'3\r\n')
 
 # Background thread to continuously read from the serial port
@@ -28,7 +28,14 @@ def read_serial():
     while True:
         try:
             if ser.in_waiting > 0:
-                last_serial_reading = ser.readline().decode('utf-8').strip()
+                raw = ser.readline().decode('utf-8').strip()
+                # assume CSV: last value is analog A0 reading
+                parts = [p.strip() for p in raw.split(',') if p.strip()]
+                # A0 reading is the third-to-last field in the CSV output
+                if len(parts) >= 3:
+                    last_serial_reading = parts[-3]
+                else:
+                    last_serial_reading = raw
         except Exception as e:
             print(f"Error reading from serial: {e}")
         time.sleep(1)
@@ -48,6 +55,9 @@ def pump_control():
         elif state == 'off':
             turn_off_pump()
             return jsonify({"message": "Pump turned off"}), 200
+        elif state == 'auto':
+            auto()
+            return jsonify({"message": "Pump set to auto"}), 200
         else:
             return jsonify({"error": "Invalid state. Use 'on' or 'off'."}), 400
     except Exception as e:
