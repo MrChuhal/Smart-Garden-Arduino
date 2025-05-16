@@ -2,6 +2,32 @@ from flask import Flask, request, jsonify
 import serial
 import time
 import threading
+#libraries needed for camera module
+from picamera2 import Picamera2
+from libcamera import controls
+
+#directory to deposit images
+pictureLocation = "/home/inesh/PictureFolder/"
+#time delay (seconds) between taking pictures
+cameradelay = 1800 #30 minutes
+#setup the camera
+picam2 = Picamera2()
+picam2.start(show_preview=True)
+picam2.set_controls({"AfMode": controls.AfModeEnum.Continuous})
+
+def keepTakingPictures():
+    #Take pictures for as long as the camera is running
+    while(True):
+        #jpg or png?
+        #Is there anything better than just putting the UTC timestamp at the end?
+        picam2.start_and_capture_file(pictureLocation + 
+                                      "Capture" + 
+                                      str(round(time.time()*100)) + 
+                                      ".jpg")
+        time.sleep(cameradelay)
+
+
+threading.Thread(target=keepTakingPictures, daemon=True).start()
 
 app = Flask(__name__)
 
