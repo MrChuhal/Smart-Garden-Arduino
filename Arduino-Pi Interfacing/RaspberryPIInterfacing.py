@@ -15,17 +15,44 @@ picam2 = Picamera2()
 picam2.start(show_preview=True)
 picam2.set_controls({"AfMode": controls.AfModeEnum.Continuous})
 
+#place to store the timestamp (for camera snapshots)
+TStampFile = open("TimeStamp.txt","rt")
+#If there is not readable timestamp information in the file, simply write the current time plus delay
+if not isDigit(TStampFile.read()):
+    TStampFile.close()
+    TStampFile = open("TimeStamp.txt","wt")
+    TStampFile.write(str(round(time.time()) + cameradelay))
+TStampFile.close()
+
 def keepTakingPictures():
-    #Take pictures for as long as the camera is running
-    while(True):
-        #jpg or png?
-        #Is there anything better than just putting the UTC timestamp at the end?
+    global TStampFile
+    TStampFile = open("TimeStamp.txt","rt")
+    #scheduled timestamp for next snapshot
+    waitTime = int(TStampFile.read())
+    TStampFile.close()
+    while True:
+        while time.time() < waitTime:
+            pass
+
+        #Take picture
         picam2.start_and_capture_file(pictureLocation + 
                                       "Capture" + 
                                       str(round(time.time()*100)) + 
                                       ".jpg")
-        time.sleep(cameradelay)
 
+        #sets new snapshot timestamp
+        count = 0
+        while time.time() > waitTime:
+            #skips until the new timestamp is greater than the current time
+            waitTime += cameradelay
+            #Increment count
+            count += 1
+        if count > 0:
+            print("In camera's inactivity, " + str(count) + " scheduled snapshots have been quit, with the next scheduled snapshot at " str(waitTime))
+        
+        TStampFile = open("TimeStamp.txt","wt")
+        TStampFile.write(str(waitTime))
+        TStampFile.close()
 
 threading.Thread(target=keepTakingPictures, daemon=True).start()
 
