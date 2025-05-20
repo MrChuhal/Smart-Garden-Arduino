@@ -19,7 +19,7 @@ picam2.set_controls({"AfMode": controls.AfModeEnum.Continuous})
 timeFileLoc = "/home/inesh/TimeStamp.txt"
 TStampFile = open(timeFileLoc,"rt")
 #If there is not readable timestamp information in the file, simply write the current time plus delay
-if not isDigit(TStampFile.read()):
+if not TStampFile.read().isdigit():
     TStampFile.close()
     TStampFile = open(timeFileLoc,"wt")
     TStampFile.write(str(round(time.time()) + cameradelay))
