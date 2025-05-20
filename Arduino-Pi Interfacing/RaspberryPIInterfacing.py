@@ -16,17 +16,18 @@ picam2.start(show_preview=True)
 picam2.set_controls({"AfMode": controls.AfModeEnum.Continuous})
 
 #place to store the timestamp (for camera snapshots)
-TStampFile = open("TimeStamp.txt","rt")
+timeFileLoc = "/home/inesh/TimeStamp.txt"
+TStampFile = open(timeFileLoc,"rt")
 #If there is not readable timestamp information in the file, simply write the current time plus delay
 if not isDigit(TStampFile.read()):
     TStampFile.close()
-    TStampFile = open("TimeStamp.txt","wt")
+    TStampFile = open(timeFileLoc,"wt")
     TStampFile.write(str(round(time.time()) + cameradelay))
 TStampFile.close()
 
 def keepTakingPictures():
     global TStampFile
-    TStampFile = open("TimeStamp.txt","rt")
+    TStampFile = open(timeFileLoc,"rt")
     #scheduled timestamp for next snapshot
     waitTime = int(TStampFile.read())
     TStampFile.close()
@@ -50,7 +51,7 @@ def keepTakingPictures():
         if count > 0:
             print("In camera's inactivity, " + str(count) + " scheduled snapshots have been quit, with the next scheduled snapshot at " str(waitTime))
         
-        TStampFile = open("TimeStamp.txt","wt")
+        TStampFile = open(timeFileLoc,"wt")
         TStampFile.write(str(waitTime))
         TStampFile.close()
 
