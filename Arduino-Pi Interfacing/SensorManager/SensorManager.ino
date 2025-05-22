@@ -41,9 +41,6 @@ bool hold2 = 0; //variable for verifying if button two is being held
 int recevied = 0; //value received from the Raspberry PI
 float temp_hum_val[2] = {0};
 void setup() {
-  //relay setup
-  pinMode(5,OUTPUT);
-
   //set up dual button switch
   pinMode(BUTTON1,INPUT);
   pinMode(BUTTON2,INPUT);
@@ -82,7 +79,7 @@ void loop() {
   delay(1000);
 }
 
-//Soil Temp| Relative Humidity | Air Temperature| Visible Light| Infrared Right| Soil Humidity (relative measure)|button 1 state|button 2 state
+//Soil Temp| Relative Humidity | Air Temperature| Visible Light| Infrared Right| Soil Humidity (from A0,A1,A2,A3)|button 1 state|button 2 state
 void readSensors() {  
   checkDHT();
   checkSoilTemp();
@@ -139,14 +136,20 @@ void checkSunlight() {
 //checks soil moisture and uses the values to turn on and off the water pump unless it is overridden by the button
 void checkSoilMoisture() {
   //The sensor qualitatively measures humidity. Low values = high humidity, high values = low humidity
-  int sensorValue = analogRead(A0);
-  Serial.print(sensorValue);
+  Serial.print(analogRead(A0));
+  Serial.print(",");
+  Serial.print(analogRead(A1));
+  Serial.print(",");
+  Serial.print(analogRead(A2));
+  Serial.print(",");
+  Serial.print(analogRead(A3));
+  //DISCONTINUED: Relay moved to Raspberry PI
   //if the button override is not on, use the measurement to determine whether the relay should turn on or of
   //meaning that the pump turns on if the soil is too dry
-  if(sensorValue >= 740) {
-    digitalWrite(5,HIGH);
-  } else {
-    digitalWrite(5,LOW);
-  }
+  //if(sensorValue >= 740) {
+  //  digitalWrite(5,HIGH);
+  //} else {
+  //  digitalWrite(5,LOW);
+  //}
 }
 
