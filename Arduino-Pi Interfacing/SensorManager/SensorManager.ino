@@ -11,7 +11,7 @@
 //Grove Sunlight Sensor - IC2
 //Grove One-Wire Temperature Sensor - D2
 //Grove Relay - D5
-//Button Switch - D6
+//Buttons aren't necessary anymore, remote control is the future!
 
 // From demo code: Setup a oneWire instance to communicate with any OneWire devices (not just Maxim/Dallas temperature ICs)
 //One Wire Temperature Sensor is connected to D2
@@ -30,14 +30,7 @@ Si115X Si1151 = Si115X();
 
 //Constants
 #define DELAYTIME 3000 // number of milliseconds delay in each reading
-#define BUTTON1 6; //button1 pin
-#define BUTTON2 7; //button2 pin
 
-bool state1 = 1; //set button1 state
-bool state2 = 1; //set button2 state
-bool on = 0; // should by default be off
-bool hold = 0;
-bool hold2 = 0; //variable for verifying if button two is being held
 int recevied = 0; //value received from the Raspberry PI
 float temp_hum_val[2] = {0};
 void setup() {
@@ -64,29 +57,22 @@ void setup() {
 }
 
 void loop() {
+  //Is this conditional necessary?
   if(Serial.available() > 0) {
-    received = Serial.read();
-    if(received == 1) {
-      turnOnWaterPump();
-    } else if(received == 2) {
-      turnOffWaterPump();
-    } else if(received == 3) {
+    
       readSensors();
-    }
   }
 
   //delays reading the sensors
   delay(1000);
 }
 
-//Soil Temp| Relative Humidity | Air Temperature| Visible Light| Infrared Right| Soil Humidity (from A0,A1,A2,A3)|button 1 state|button 2 state
+//Soil Temp| Relative Humidity | Air Temperature| Visible Light| Infrared Right| Soil Humidity (from A0,A1,A2,A3)
 void readSensors() {  
   checkDHT();
   checkSoilTemp();
   checkSunlight();
   checkSoilMoisture();
-  Serial.print(", "); Serial.print(state1); 
-  Serial.print(", "); Serial.print(state2);
   Serial.println();
 }
 
