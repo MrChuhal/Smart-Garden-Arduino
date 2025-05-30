@@ -49,7 +49,7 @@ def keepTakingPictures():
             #Increment count
             count += 1
         if count > 0:
-            print("In camera's inactivity, " + str(count) + " scheduled snapshots have been quit, with the next scheduled snapshot at " str(waitTime))
+            print("In camera's inactivity, " + str(count) + " scheduled snapshots have been quit, with the next scheduled snapshot at " + str(waitTime))
         
         TStampFile = open(timeFileLoc,"wt")
         TStampFile.write(str(waitTime))
