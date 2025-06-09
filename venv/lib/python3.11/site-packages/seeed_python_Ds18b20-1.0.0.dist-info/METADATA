@@ -1,0 +1,87 @@
+Metadata-Version: 2.1
+Name: seeed-python-Ds18b20
+Version: 1.0.0
+Summary: Python library for the Grove - ds18b20 Sensor (si114x). 
+Home-page: https://github.com/Seeed-Studio/Seeed_Python_Ds18b20
+Author: Hansen
+Author-email: 595355940@qq.com
+License: MIT
+Keywords: seeed grove ds18b20 sensor onewire hardware temperature
+Platform: UNKNOWN
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Software Development :: Libraries
+Classifier: Topic :: System :: Hardware
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.4
+Classifier: Programming Language :: Python :: 3.5
+Description-Content-Type: text/markdown
+Requires-Dist: Seeed-grove.py
+
+# Seeed_Python_Ds18b20
+
+DS18B20 Waterproof Temperature Sensor is a digital sensor which can reach the digital data resolution up to 12 bits and has ±0.5°C accuracy from -10°C to +85°C. It includes an analog-to-digital converter to convert the analog signal to the digital output with the resolution up to 
+12 bits.
+
+## Dependencies
+
+This driver depends on:
+- [***grove.py***](https://github.com/Seeed-Studio/grove.py)
+
+This is easy to install with the following command.
+
+```python
+pip3 install Seeed-grove.py
+```
+
+### Installing from PyPI
+
+On supported GNU/Linux systems like the Raspberry Pi, you can install the driver locally from PyPI. To install for current user:
+
+```
+pip3 install seeed-python-Ds18b20
+```
+
+To install system-wide (this may be required in some cases):
+
+```
+sudo pip3 install seeed-python-Ds18b20
+```
+
+if you want to update the driver locally from PyPI. you can use:
+
+```
+pip3 install --upgrade seeed-python-Ds18b20
+```
+
+## Usage
+
+connect Ds18b20 to D5 at BaseHat.
+
+```python
+import seeed_ds18b20
+import time
+
+def main():
+    DS18B20 = seeed_ds18b20.grove_ds18b20()
+    print("Please use Ctrl C to quit")
+    while True:
+        temp_c,temp_f = DS18B20.read_temp
+        print('temp_c %.2f C   temp_f %.2f F' % (temp_c,temp_f),end=" ")
+        print('\r', end='')
+        time.sleep(0.5)
+
+if __name__ == "__main__":
+    main()   
+```
+
+## API Reference
+
+- uint16_t,uint16_t read_temp(void):return temperature
+
+```python
+temp_c,temp_f = DS18B20.read_temp
+```
+
+

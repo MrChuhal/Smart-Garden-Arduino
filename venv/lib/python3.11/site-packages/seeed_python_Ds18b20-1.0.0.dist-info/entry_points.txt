@@ -1,0 +1,3 @@
+[console_scripts]
+seeed_ds18b20 = seeed_ds18b20:main
+

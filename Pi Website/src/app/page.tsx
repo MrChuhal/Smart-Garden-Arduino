@@ -7,7 +7,7 @@ import axios from "axios";
 
 export default function Home() {
   const [selectedState, setSelectedState] = useState("Off");
-  const [serialData, setSerialData] = useState<string>("");
+  const [serialData, setSerialData] = useState({});
 
   const updatePumpState = async (state: string) => {
     try {
@@ -15,7 +15,7 @@ export default function Home() {
         message: string;
       }
 
-      const response = await axios.post("/api/pump", { state });
+      const response = await axios.post("/api/pump", { "mode": state });
       const data = response.data as PumpResponse;
       console.log(data.message);
     } catch (error) {
@@ -27,13 +27,13 @@ export default function Home() {
     const fetchSerial = async () => {
       try {
         const res = await axios.get("/api/serial");
-        setSerialData(res.data.last_serial_reading);
+        setSerialData(res.data);
       } catch (e) {
         console.error("Failed to fetch serial data:", e);
       }
     };
     fetchSerial();
-    const interval = setInterval(fetchSerial, 1000);
+    const interval = setInterval(fetchSerial, 5000);
     return () => clearInterval(interval);
   }, []);
 
@@ -136,7 +136,31 @@ export default function Home() {
           <CardTitle>Sensor A0 Reading</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-lg font-bold">{serialData}</p>
+          <p className="text-lg font-bold">{serialData["m0"]}</p>
+        </CardContent>
+      </Card>
+      <Card className="mt-10 w-[75%] mx-auto">
+        <CardHeader>
+          <CardTitle>Sensor A1 Reading</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-lg font-bold">{serialData["m1"]}</p>
+        </CardContent>
+      </Card>
+      <Card className="mt-10 w-[75%] mx-auto">
+        <CardHeader>
+          <CardTitle>Sensor A2 Reading</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-lg font-bold">{serialData["m2"]}</p>
+        </CardContent>
+      </Card>
+      <Card className="mt-10 w-[75%] mx-auto">
+        <CardHeader>
+          <CardTitle>Sensor A3 Reading</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-lg font-bold">{serialData["m3"]}</p>
         </CardContent>
       </Card>
       <Card className="mt-10 w-[75%] mx-auto">
