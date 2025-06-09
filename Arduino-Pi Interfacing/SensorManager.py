@@ -38,6 +38,7 @@ def checkSunlight():
 def main():
 	while True:
 		checkDHT();    
+		checkSunlight()    
 
 if __name__ == "__main__":
     main()   
