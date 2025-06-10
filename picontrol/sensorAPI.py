@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request
 import seeed_dht
 import seeed_ds18b20
-from seeed_si115x import grove_si115x
+from picontrol.seeed_si115x import grove_si115x
 from grove.adc import ADC
 import RPi.GPIO as GPIO
 import threading

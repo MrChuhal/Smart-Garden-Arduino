@@ -4,7 +4,7 @@
 import seeed_dht
 import seeed_ds18b20
 #Find this library
-import seeed_si115x
+import picontrol.seeed_si115x as seeed_si115x
 import RPi.GPIO as GPIO
 
 # DHT11 at port 16
