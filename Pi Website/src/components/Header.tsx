@@ -6,7 +6,7 @@ export default function Header() {
             <div className="container mx-auto flex justify-between items-center">
                 <h1 className="text-xl font-bold">
                     <Link href="/">
-                        My Website
+                        Stem Garden
                     </Link>
                 </h1>
                 <nav>
