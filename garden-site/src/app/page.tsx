@@ -18,11 +18,29 @@ interface SensorData {
   m3?: number | string;
 }
 
+// Mock data for development and testing
+const mockSensorData: SensorData = {
+  air_humidity: 65,
+  air_temperature: 24.5,
+  soil_temperature: 22.1,
+  sunlight_visible: 650,
+  sunlight_ir: 850,
+  m0: 540,
+  m1: 580,
+  m2: 520,
+  m3: 560
+};
+
 export default function Home() {
   const [selectedState, setSelectedState] = useState("Off");
-  const [serialData, setSerialData] = useState<SensorData>({});
+  const [serialData, setSerialData] = useState<SensorData>(mockSensorData);
 
   const updatePumpState = async (state: string) => {
+    // Mock implementation
+    console.log(`Pump state would be set to: ${state}`);
+    
+    // Commented out actual API implementation
+    /*
     try {
       interface PumpResponse {
         message: string;
@@ -34,9 +52,32 @@ export default function Home() {
     } catch (error) {
       console.error("Failed to update pump state:", error);
     }
+    */
   };
 
   useEffect(() => {
+    // Using mock data directly instead of API fetch
+    const mockDataFetch = () => {
+      // Optionally add some randomization to simulate changing values
+      setSerialData({
+        ...mockSensorData,
+        air_temperature: Number((22 + Math.random() * 5).toFixed(1)),
+        air_humidity: Number((60 + Math.random() * 15).toFixed(0)),
+        soil_temperature: Number((20 + Math.random() * 4).toFixed(1)),
+        sunlight_visible: Number((600 + Math.random() * 200).toFixed(0)),
+        m0: Number((520 + Math.random() * 60).toFixed(0)),
+        m1: Number((540 + Math.random() * 60).toFixed(0)),
+        m2: Number((530 + Math.random() * 60).toFixed(0)),
+        m3: Number((550 + Math.random() * 60).toFixed(0)),
+      });
+    };
+    
+    mockDataFetch();
+    const interval = setInterval(mockDataFetch, 5000);
+    return () => clearInterval(interval);
+    
+    // Commented out actual API implementation
+    /*
     const fetchSerial = async () => {
       try {
         const res = await axios.get("/api/serial");
@@ -48,6 +89,7 @@ export default function Home() {
     fetchSerial();
     const interval = setInterval(fetchSerial, 5000);
     return () => clearInterval(interval);
+    */
   }, []);
 
   // Helper to process numerical values from API
@@ -67,7 +109,7 @@ export default function Home() {
     if (values.length === 0) return 0;
     
     const avg = values.reduce((sum, val) => sum + val, 0) / values.length;
-    return moistureToPercentage(avg);
+    return Math.round(moistureToPercentage(avg));
   };
 
   // Convert individual moisture sensor reading to percentage
@@ -83,6 +125,11 @@ export default function Home() {
   const isLightDetected = (): boolean => {
     const visible = getNumericValue(serialData.sunlight_visible);
     return visible > 100; // Threshold for light detection
+  };
+
+  // Helper function to round values for display
+  const roundForDisplay = (value: number): number => {
+    return Math.round(value);
   };
 
   return (
@@ -110,14 +157,14 @@ export default function Home() {
           description={"Air Temperature"} 
           metric={"°C"} 
           bound={40} 
-          percentage={getNumericValue(serialData.air_temperature)} 
+          percentage={roundForDisplay(getNumericValue(serialData.air_temperature))} 
         />
         <Rad 
           title={"Soil Temp"} 
           description={"Temperature of Soil"} 
           metric={"°C"} 
           bound={40} 
-          percentage={getNumericValue(serialData.soil_temperature)} 
+          percentage={roundForDisplay(getNumericValue(serialData.soil_temperature))} 
         />
         <div className="flex flex-col gap-4">
           <Rad 
@@ -125,7 +172,7 @@ export default function Home() {
             description={"Sunlight"} 
             metric={" Lux"} 
             bound={1000} 
-            percentage={getNumericValue(serialData.sunlight_visible)} 
+            percentage={roundForDisplay(getNumericValue(serialData.sunlight_visible))} 
           />
           <Card>
             <CardHeader>
@@ -145,19 +192,19 @@ export default function Home() {
           description={"Moisture Values"}
           sensorData={[
             {
-              value: moistureToPercentage(getNumericValue(serialData.m0)),
+              value: roundForDisplay(moistureToPercentage(getNumericValue(serialData.m0))),
               metric: "Quadrant I",
             },
             {
-              value: moistureToPercentage(getNumericValue(serialData.m1)),
+              value: roundForDisplay(moistureToPercentage(getNumericValue(serialData.m1))),
               metric: "Quadrant II",
             },
             {
-              value: moistureToPercentage(getNumericValue(serialData.m2)),
+              value: roundForDisplay(moistureToPercentage(getNumericValue(serialData.m2))),
               metric: "Quadrant III",
             },
             {
-              value: moistureToPercentage(getNumericValue(serialData.m3)),
+              value: roundForDisplay(moistureToPercentage(getNumericValue(serialData.m3))),
               metric: "Quadrant IV",
             },
           ]}
