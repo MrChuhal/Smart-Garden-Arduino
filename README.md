@@ -2,7 +2,9 @@
 
 This repository includes all the **code** you need to get started with the Tesla STEM Smart Garden (or even one of your own)!
 
-If you are curious about this project, Don't be afraid to message @somebody4545 from GitHub for access to more documentation. If you are doing this for EESD, contact me via a school email, or when I graduate, contact me with your **personal** email. 
+If you are curious about this project, Don't be afraid to email [@somebody4545](https://github.com/somebody4545) on GitHub for access to more documentation.
+
+If you are doing this for an EESD project, contact me via a school email on my school email, or when I graduate, contact me with your **personal** email. 
 
 # Prerequisites
 - Raspberry Pi
