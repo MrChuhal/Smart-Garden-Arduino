@@ -2,6 +2,10 @@
 
 This repository includes all the **code** you need to get started with the Tesla STEM Smart Garden (or even one of your own)!
 
+If you are curious about this project, Don't be afraid to email [@somebody4545](https://github.com/somebody4545) on GitHub for access to more documentation.
+
+If you are doing this for an EESD project, contact me via a school email on my school email, or when I graduate, contact me with your **personal** email. 
+
 # Prerequisites
 - Raspberry Pi
     - 3b+ *works*, there are no CAD files for a case for it
@@ -33,7 +37,7 @@ This repository includes all the **code** you need to get started with the Tesla
     - I2C
 
 ## Step 2: Prepare to run
-<sup><sub> This is the fun part where version changes and other issues can completely ruin it all. If you would like a working venv to work with, the current garden has it already, but I sincerely hope this works and we can all go about our day happy. I am open to help out with this section. It may take longer than you think. Blame Seeed.
+> This is the fun part where version changes and other issues can completely ruin it all. If you would like a working venv to work with, the current garden has it already, but I sincerely hope this works and we can all go about our day happy. I am open to help out with this section. It may take longer than you think. Blame Seeed.
 
 ### Installing libraries
 - I created bash scripts to make your job a little easier. Here's a simple one liner that should work if you (and I) did everything right:
