@@ -59,7 +59,7 @@ After the previous set up, installing should be as easy as:
 ```bash
 ./run.sh
 ```
-
+You can run this project fully offline on localhost:3000 if you skip the Cloudflare Tunnel setup.
 You should now be able to check out the site at `http://localhost:3000`, or whatever your tunnel URL is!!! Give yourself a pat on the back.
 
 ## To-Do
