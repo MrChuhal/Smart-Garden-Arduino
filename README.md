@@ -52,6 +52,7 @@ This repository includes all the **code** you need to get started with the Tesla
 - If you have a domain, this is where you'll have some more set up.
 - Here, I'd recommend you do some research on Cloudflare Zero Trust to create a tunnel, and likely on a school network, you'll need to use Cloudflare Warp on top of it (instructions for these are online, and likely more accurate)
 - Ensure the port the site points to is `localhost:3000`
+> [This guide](https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/install-and-setup/tunnel-guide/) is what you're looking for to create the tunnel
 ### Run script
 After the previous set up, installing should be as easy as:
 
@@ -61,8 +62,8 @@ After the previous set up, installing should be as easy as:
 
 You should now be able to check out the site at `http://localhost:3000`, or whatever your tunnel URL is!!! Give yourself a pat on the back.
 
-## Known Limitations
-- The current version does not yet do the following successfully:
-   - Show the camera input. It saves to PictureFolder at the user's folder
-    - Allow the user to download a CSV. It saves to the user's folder as well
-    - Update the pump thresholds for watering easily. Right now, you will have to edit sensorAPI to do this.
+## To-Do
+- [ ] Live camera stream display on dashboard
+- [ ] CSV export download button
+- [ ] Editable pump thresholds in UI
+
