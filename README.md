@@ -2,6 +2,8 @@
 
 This repository includes all the **code** you need to get started with the Tesla STEM Smart Garden (or even one of your own)!
 
+If you are curious about this project, Don't be afraid to message @somebody4545 from GitHub for access to more documentation.
+
 # Prerequisites
 - Raspberry Pi
     - 3b+ *works*, there are no CAD files for a case for it
