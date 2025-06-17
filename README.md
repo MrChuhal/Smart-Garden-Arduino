@@ -60,7 +60,7 @@ After the previous set up, installing should be as easy as:
 ```
 
 ## Known Limitations
-- The current version does not yet do the following:
+- The current version does not yet do the following successfully:
    - Show the camera input. It saves to PictureFolder at the user's folder
     - Allow the user to download a CSV. It saves to the user's folder as well
     - Update the pump thresholds for watering easily. Right now, you will have to edit sensorAPI to do this.
