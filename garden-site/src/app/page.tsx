@@ -5,9 +5,22 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
+// Define type for the sensor API response
+interface SensorData {
+  air_humidity?: number | string;
+  air_temperature?: number | string;
+  soil_temperature?: number | string;
+  sunlight_visible?: number | string;
+  sunlight_ir?: number | string;
+  m0?: number | string;
+  m1?: number | string;
+  m2?: number | string;
+  m3?: number | string;
+}
+
 export default function Home() {
   const [selectedState, setSelectedState] = useState("Off");
-  const [serialData, setSerialData] = useState({});
+  const [serialData, setSerialData] = useState<SensorData>({});
 
   const updatePumpState = async (state: string) => {
     try {
@@ -37,6 +50,41 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
+  // Helper to process numerical values from API
+  const getNumericValue = (value: string | number | undefined): number => {
+    if (value === undefined) return 0;
+    if (typeof value === 'number') return value;
+    if (value.toString().startsWith('Error')) return 0;
+    return parseFloat(value.toString()) || 0;
+  };
+
+  // Calculate average moisture level (0-100%)
+  const averageMoisture = (): number => {
+    const values = [serialData.m0, serialData.m1, serialData.m2, serialData.m3]
+      .map(val => getNumericValue(val))
+      .filter(val => val > 0);
+    
+    if (values.length === 0) return 0;
+    
+    const avg = values.reduce((sum, val) => sum + val, 0) / values.length;
+    return moistureToPercentage(avg);
+  };
+
+  // Convert individual moisture sensor reading to percentage
+  const moistureToPercentage = (value: number): number => {
+    // Cap the value between 500 (wettest) and 650 (driest)
+    const cappedValue = Math.min(Math.max(value, 500), 650);
+    
+    // Map range 650 (dry) - 500 (wet) to 0% - 100%
+    return ((650 - cappedValue) / (650 - 500)) * 100;
+  };
+
+  // Check if light sensor is detecting light
+  const isLightDetected = (): boolean => {
+    const visible = getNumericValue(serialData.sunlight_visible);
+    return visible > 100; // Threshold for light detection
+  };
+
   return (
     <div className="px-16 py-10">
       <div className="px-32 flex flex-row my-10 mb-24">
@@ -49,23 +97,47 @@ export default function Home() {
           </button>
         </div>
       </div>
-      <div className="flex  mt-10 gap-4 flex-wrap justify-center">
-        <Rad title={"Hydration"} description={"Current Hydration Status"} metric={"%"} bound={100} percentage={75} />
-        <Rad title={"Air Temp"} description={"Temperature of Soil"} metric={"°C"} bound={20} percentage={12} />
-        <Rad title={"Soil Temp"} description={"Temperature of Soil"} metric={"°C"} bound={20} percentage={12} />
+      <div className="flex mt-10 gap-4 flex-wrap justify-center">
+        <Rad 
+          title={"Hydration"} 
+          description={"Current Hydration Status"} 
+          metric={"%"} 
+          bound={100} 
+          percentage={averageMoisture()} 
+        />
+        <Rad 
+          title={"Air Temp"} 
+          description={"Air Temperature"} 
+          metric={"°C"} 
+          bound={40} 
+          percentage={getNumericValue(serialData.air_temperature)} 
+        />
+        <Rad 
+          title={"Soil Temp"} 
+          description={"Temperature of Soil"} 
+          metric={"°C"} 
+          bound={40} 
+          percentage={getNumericValue(serialData.soil_temperature)} 
+        />
         <div className="flex flex-col gap-4">
-          <Rad title={"Light"} description={"Sunlight"} metric={" Lux"} bound={20} percentage={12} />
+          <Rad 
+            title={"Light"} 
+            description={"Sunlight"} 
+            metric={" Lux"} 
+            bound={1000} 
+            percentage={getNumericValue(serialData.sunlight_visible)} 
+          />
           <Card>
             <CardHeader>
               <CardTitle>Light Sensor Status</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-lg">
-                The light sensor is currently <span className="font-bold">not blocked</span>.
+                The light sensor is currently <span className="font-bold">{isLightDetected() ? "detecting light" : "not detecting light"}</span>.
               </p>
             </CardContent>
           </Card>
-          </div>
+        </div>
       </div>
       <div className="flex mt-10 gap-4 flex-wrap justify-center">
         <MoistureMap
@@ -73,19 +145,19 @@ export default function Home() {
           description={"Moisture Values"}
           sensorData={[
             {
-              value: 45,
+              value: moistureToPercentage(getNumericValue(serialData.m0)),
               metric: "Quadrant I",
             },
             {
-              value: 30,
+              value: moistureToPercentage(getNumericValue(serialData.m1)),
               metric: "Quadrant II",
             },
             {
-              value: 60,
+              value: moistureToPercentage(getNumericValue(serialData.m2)),
               metric: "Quadrant III",
             },
             {
-              value: 80,
+              value: moistureToPercentage(getNumericValue(serialData.m3)),
               metric: "Quadrant IV",
             },
           ]}
@@ -129,40 +201,32 @@ export default function Home() {
               </div>
             </CardContent>
           </Card>
+          
+          <Card className="mt-4">
+            <CardHeader>
+              <CardTitle>Sensor Readings</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 gap-3">
+                <p><span className="font-bold">Air Humidity:</span> {serialData.air_humidity !== undefined ? `${serialData.air_humidity}%` : 'N/A'}</p>
+                <p><span className="font-bold">Air Temperature:</span> {serialData.air_temperature !== undefined ? `${serialData.air_temperature}°C` : 'N/A'}</p>
+                <p><span className="font-bold">Soil Temperature:</span> {serialData.soil_temperature !== undefined ? `${serialData.soil_temperature}°C` : 'N/A'}</p>
+                <p><span className="font-bold">Light Level:</span> {serialData.sunlight_visible !== undefined ? `${serialData.sunlight_visible} lux` : 'N/A'}</p>
+              </div>
+              <div className="mt-3">
+                <p className="font-semibold">Raw Moisture Values:</p>
+                <div className="grid grid-cols-2 gap-2 mt-1">
+                  <p>Sensor 1: {serialData.m0 || 'N/A'}</p>
+                  <p>Sensor 2: {serialData.m1 || 'N/A'}</p>
+                  <p>Sensor 3: {serialData.m2 || 'N/A'}</p>
+                  <p>Sensor 4: {serialData.m3 || 'N/A'}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
-      <Card className="mt-10 w-[75%] mx-auto">
-        <CardHeader>
-          <CardTitle>Sensor A0 Reading</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-lg font-bold">{serialData["m0"]}</p>
-        </CardContent>
-      </Card>
-      <Card className="mt-10 w-[75%] mx-auto">
-        <CardHeader>
-          <CardTitle>Sensor A1 Reading</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-lg font-bold">{serialData["m1"]}</p>
-        </CardContent>
-      </Card>
-      <Card className="mt-10 w-[75%] mx-auto">
-        <CardHeader>
-          <CardTitle>Sensor A2 Reading</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-lg font-bold">{serialData["m2"]}</p>
-        </CardContent>
-      </Card>
-      <Card className="mt-10 w-[75%] mx-auto">
-        <CardHeader>
-          <CardTitle>Sensor A3 Reading</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-lg font-bold">{serialData["m3"]}</p>
-        </CardContent>
-      </Card>
+      
       <Card className="mt-10 w-[75%] mx-auto">
         <CardHeader>
           <CardTitle>Live Camera Feed</CardTitle>
