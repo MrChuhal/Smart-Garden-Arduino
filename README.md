@@ -59,6 +59,8 @@ After the previous set up, installing should be as easy as:
 ./run.sh
 ```
 
+You should now be able to check out the site at `http://localhost:3000`, or whatever your tunnel URL is!!! Give yourself a pat on the back.
+
 ## Known Limitations
 - The current version does not yet do the following successfully:
    - Show the camera input. It saves to PictureFolder at the user's folder
