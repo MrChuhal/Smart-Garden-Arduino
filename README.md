@@ -42,6 +42,12 @@ This repository includes all the **code** you need to get started with the Tesla
     git clone https://github.com/MrChuhal/Smart-Garden-Arduino.git && cd Smart-Garden-Arduino && chmod +x *.sh && ./setupPython.sh && ./setupSite.sh
     ```
 - I recommend digging in to know what you're actually doing, but this should work just fine.
+- 
+### Bash Script Summary
+- `setupPython.sh`: Sets up a Python virtual environment and installs required libraries.
+- `setupSite.sh`: Installs NVM and sets up the frontend environment.
+- `run.sh`: Starts both backend and frontend servers.
+
 - **Restart** once it is all completed
 
 ### Refactor
