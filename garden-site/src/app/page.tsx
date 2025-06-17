@@ -57,27 +57,26 @@ export default function Home() {
 
   useEffect(() => {
     // Using mock data directly instead of API fetch
-    const mockDataFetch = () => {
-      // Optionally add some randomization to simulate changing values
-      setSerialData({
-        ...mockSensorData,
-        air_temperature: Number((22 + Math.random() * 5).toFixed(1)),
-        air_humidity: Number((60 + Math.random() * 15).toFixed(0)),
-        soil_temperature: Number((20 + Math.random() * 4).toFixed(1)),
-        sunlight_visible: Number((600 + Math.random() * 200).toFixed(0)),
-        m0: Number((520 + Math.random() * 60).toFixed(0)),
-        m1: Number((540 + Math.random() * 60).toFixed(0)),
-        m2: Number((530 + Math.random() * 60).toFixed(0)),
-        m3: Number((550 + Math.random() * 60).toFixed(0)),
-      });
-    };
+    // const mockDataFetch = () => {
+    //   // Optionally add some randomization to simulate changing values
+    //   setSerialData({
+    //     ...mockSensorData,
+    //     air_temperature: Number((22 + Math.random() * 5).toFixed(1)),
+    //     air_humidity: Number((60 + Math.random() * 15).toFixed(0)),
+    //     soil_temperature: Number((20 + Math.random() * 4).toFixed(1)),
+    //     sunlight_visible: Number((600 + Math.random() * 200).toFixed(0)),
+    //     m0: Number((520 + Math.random() * 60).toFixed(0)),
+    //     m1: Number((540 + Math.random() * 60).toFixed(0)),
+    //     m2: Number((530 + Math.random() * 60).toFixed(0)),
+    //     m3: Number((550 + Math.random() * 60).toFixed(0)),
+    //   });
+    // };
     
-    mockDataFetch();
-    const interval = setInterval(mockDataFetch, 5000);
-    return () => clearInterval(interval);
+    // mockDataFetch();
+    // const interval = setInterval(mockDataFetch, 5000);
+    // return () => clearInterval(interval);
     
     // Commented out actual API implementation
-    /*
     const fetchSerial = async () => {
       try {
         const res = await axios.get("/api/serial");
@@ -89,7 +88,6 @@ export default function Home() {
     fetchSerial();
     const interval = setInterval(fetchSerial, 5000);
     return () => clearInterval(interval);
-    */
   }, []);
 
   // Helper to process numerical values from API
