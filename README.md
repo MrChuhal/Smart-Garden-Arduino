@@ -33,7 +33,7 @@ This repository includes all the **code** you need to get started with the Tesla
     - I2C
 
 ## Step 2: Prepare to run
-<sup><sub> This is the fun part where version changes and other issues can completely ruin it all. If you would like a working venv to work with, the current garden has it already, but I sincerely hope this works and we can all go about our day happy. I am open to help out with this section. It may take longer than you think. Blame Seeed.
+> This is the fun part where version changes and other issues can completely ruin it all. If you would like a working venv to work with, the current garden has it already, but I sincerely hope this works and we can all go about our day happy. I am open to help out with this section. It may take longer than you think. Blame Seeed.
 
 ### Installing libraries
 - I created bash scripts to make your job a little easier. Here's a simple one liner that should work if you (and I) did everything right:
