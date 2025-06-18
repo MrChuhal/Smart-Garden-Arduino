@@ -4,7 +4,6 @@ import time
 import threading
 #libraries needed for camera module
 from picamera2 import Picamera2
-from libcamera import controls
 
 #directory to deposit images
 pictureLocation = "/home/inesh/PictureFolder/"
